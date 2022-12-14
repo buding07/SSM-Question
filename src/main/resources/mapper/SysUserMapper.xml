@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itmk.web.sys_user.mapper.SysUserMapper">
+
+    <resultMap id="sysUserMap" type="com.itmk.web.sys_user.entity.SysUser">
+        <id property="userId" column="user_id"></id>
+        <result property="username" column="username"></result>
+        <result property="password" column="password"></result>
+        <result property="phone" column="phone"></result>
+        <result property="email" column="email"></result>
+        <result property="status" column="status"></result>
+        <result property="isAdmin" column="is_admin"></result>
+    </resultMap>
+
+    <!--getUserList-->
+    <select id="getUserList" resultMap="sysUserMap">
+        select * from sys_user
+    </select>
+
+<!--    boolean addUser(@Param("user") SysUser user);-->
+    <insert id="addUser" parameterType="com.itmk.web.sys_user.entity.SysUser">
+        insert into sys_user (phone,email,username,password,status)
+        values (#{user.phone},#{user.email},#{user.username},#{user.password},#{user.status})
+    </insert>
+
+<!--    getUserByName-->
+    <select id="getUserByName" resultMap="sysUserMap">
+        select * from sys_user
+        where username = #{username}
+    </select>
+
+<!--    getUserTableList-->
+    <select id="getUserTableList" resultMap="sysUserMap">
+        select * from sys_user
+            where 1=1
+            <if test="parm.phone != null and parm.phone !=''">
+                and phone like concat('%',#{parm.phone},'%')
+            </if>
+    </select>
+
+
+    <!--getUserById -->
+    <select id="getUserById" resultMap="sysUserMap">
+        select * from sys_user
+        where user_id = #{userId}
+    </select>
+
+    <!--  boolean updateById(@Param("user") String user);-->
+    <update id="updateById">
+        update sys_user
+        <set>
+            <if test="user.username != null and user.username !=''">
+                username =#{user.username},
+            </if>
+            <if test="user.password != null and user.password !=''">
+                password =#{user.password},
+            </if>
+            <if test="user.phone != null and user.phone !=''">
+                phone =#{user.phone},
+            </if>
+            <if test="user.email != null and user.email !=''">
+                email =#{user.email},
+            </if>
+            <if test="user.status != null and user.status !=''">
+                status =#{user.status},
+            </if>
+        </set>
+        where user_id =#{user.userId}
+    </update>
+
+    <!--删除用户-->
+    <!--    boolean deleteById(@Param("userId") String userId);-->
+    <delete id="deleteById">
+        delete from sys_user
+        where user_id = #{userId}
+    </delete>
+
+    <!--SysUser login(@Param("user") SysUser user)-->
+    <select id="login" resultMap="sysUserMap">
+        select * from sys_user
+        where username = #{user.username}
+        and password = #{user.password}
+    </select>
+
+</mapper>
